@@ -59,7 +59,7 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,
 	cv::Mat lowBinImg;
 	cv::threshold(grayScale, lowBinImg, threshold1, 255, cv::THRESH_BINARY);
 	cv::Mat highBinImg;
-	cv::threshold(grayScale, highBinImg, threshold2, 255, cv::THRESH_BINARY);
+	cv::threshold(grayScale, highBinImg, threshold2, 255, cv::THRESH_BINARY_INV);
 	// 画像の膨張収縮
 	cv::Mat element1(size1,size1,CV_8U, cv::Scalar::all(255));
 	cv::Mat element2(size2,size2,CV_8U, cv::Scalar::all(255));
