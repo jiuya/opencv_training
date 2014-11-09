@@ -3,7 +3,7 @@ CFLAGS   = -Wall  -g -MMD -MP
 LDFLAGS  = -lopencv_highgui -lopencv_core -lopencv_imgproc `pkg-config --libs gtk+-3.0`
 LIBS     =
 INCLUDE  = -I../include -I/usr/local/include/opencv2 -I/usr/local/include/opencv `pkg-config --cflags gtk+-3.0`
-TARGET   = ../bin/$(shell basename `readlink -f ..`)
+TARGET   = ../bin/$(shell basename `readlink -f ..`).o
 OBJDIR   = ./obj
 ifeq "$(strip $(OBJDIR))" ""
   OBJDIR = .
