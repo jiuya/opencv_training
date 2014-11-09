@@ -3,6 +3,7 @@
 *.lo
 *.o
 *.obj
+*.d
 
 # Precompiled Headers
 *.gch
@@ -26,7 +27,10 @@
 *.exe
 *.out
 *.app
-*.d
 
 # Bitmap
 *.bmp
+
+# etc
+*.DS_Store
+*.db
