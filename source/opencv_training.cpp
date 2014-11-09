@@ -62,14 +62,14 @@ int main(int argc, char ** argv)
 
 	// 表示用box
 	dialog.vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-	gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,TRUE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,FALSE,TRUE,0);
 	{
 		// img用+グラフy用 hbox
 		dialog.imgHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.imgHbox,TRUE,TRUE,0);
 		// img 用　vbox
 		dialog.imgVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.imgVbox,TRUE,TRUE,0);
+		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.imgVbox,FALSE,TRUE,0);
 		// img drawing_area
 		dialog.drowingarea = gtk_drawing_area_new();
 		gtk_box_pack_start(GTK_BOX(dialog.imgVbox),dialog.drowingarea,TRUE,TRUE,0);
@@ -79,7 +79,10 @@ int main(int argc, char ** argv)
 									gdk_pixbuf_get_width(dialog.pixbuf),
 									gdk_pixbuf_get_height(dialog.pixbuf));
 		g_signal_connect(G_OBJECT(dialog.drowingarea),"draw",
-									G_CALLBACK(cb_expose),(gpointer)dialog.pixbuf);
+									G_CALLBACK(cb_expose),(gpointer)&dialog);
+		g_signal_connect(G_OBJECT(dialog.drowingarea), "button_press_event",
+				                   G_CALLBACK(cb_button_press_event), NULL);
+		gtk_widget_set_events(dialog.drowingarea, GDK_BUTTON_PRESS_MASK);
 
 		// グラフy用 vbox
 		dialog.imgVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
@@ -105,7 +108,7 @@ int main(int argc, char ** argv)
 
 	// 操作用box
 	dialog.vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-	gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,TRUE,TRUE,0);
+	gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,FALSE,TRUE,0);
 	// buttonを配置
 	{
 		dialog.upButton = gtk_button_new_with_label("UP");

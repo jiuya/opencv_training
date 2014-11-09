@@ -1,14 +1,15 @@
 #include"opencv_training.h"
 
 // cairo_surface_t *surface = NULL;
- GdkWindow *drowable;
- GdkWindow *graphXdrawable = NULL;
- GdkWindow *graphYdrawable = NULL;
- GdkPixbuf *pixbufdata;
- GError *error = NULL;
- int xline = 0;
- int yline = 0;
- int w,h;
+static GdkWindow *drowable;
+static GdkWindow *graphXdrawable = NULL;
+static GdkWindow *graphYdrawable = NULL;
+static GdkPixbuf *pixbufdata;
+static MainDialog *dialog;
+static GError *error = NULL;
+static int xline = 0;
+static int yline = 0;
+static int w,h;
 
 
 static void
@@ -100,6 +101,8 @@ draw_graph(void)
 	cairo_fill(graphYcr);
 	cairo_destroy(graphXcr);
 	cairo_destroy(graphYcr);
+	
+//	gtk_widget_set_size_request(dialog->window,w+10+10+255+100,h+10+10);
 }
 // expose event
 gboolean
@@ -109,9 +112,15 @@ cb_expose(	GtkWidget *widget,
 {
 	//GdkPixbuf *pixbuf = (GdkPixbuf * ) data;
 	//GdkPixbuf *background;
+	dialog = (MainDialog *)data;	
 	if(pixbufdata == NULL)
-	pixbufdata = (GdkPixbuf *)data;	
-	
+	pixbufdata = (GdkPixbuf *)dialog->pixbuf;	
+	w = gdk_pixbuf_get_width(pixbufdata);
+	h = gdk_pixbuf_get_height(pixbufdata);
+
+	gtk_widget_set_size_request(dialog->drowingarea,w,h);
+
+//	gtk_widget_set_size_request(dialog->window,w+10+10+255+100,h+10+10);
 	drowable = gtk_widget_get_window (widget);
 	draw_display();
 
@@ -206,4 +215,25 @@ void cb_quit(GtkAction *action, gpointer user_data)
   GObject *window = G_OBJECT(user_data);
   g_object_unref(g_object_get_data(window, "ui"));
   gtk_main_quit();
+}
+
+// マウスイベント
+gint 
+cb_button_press_event(GtkWidget *widget, GdkEventButton *event)
+{
+	int x, y, button;
+	guint state;
+
+	x = event->x;
+	y = event->y;
+	state = event->state;
+	button = event->button;
+
+	if(button == 1) {
+		xline = y;
+		yline = x;
+		draw_display();
+		draw_graph();
+	}
+	return TRUE;
 }

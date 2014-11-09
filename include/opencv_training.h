@@ -58,4 +58,6 @@ void cb_open(GtkAction *action, gpointer user_data);
 
 void cb_quit(GtkAction *action, gpointer user_data);
 
+gint cb_button_press_event(GtkWidget *widget, GdkEventButton *event);
+
 #endif
