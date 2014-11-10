@@ -10,6 +10,7 @@ static GError *error = NULL;
 static int xline = 0;
 static int yline = 0;
 static int w,h;
+static int graphline = 0;
 
 
 static void
@@ -52,7 +53,13 @@ draw_graph(void)
 	long line;
 	guchar *pixel;
 	cairo_t *graphXcr;
+	cairo_t *graphXcr_r;
+	cairo_t *graphXcr_g;
+	cairo_t *graphXcr_b;
 	cairo_t *graphYcr;
+	cairo_t *graphYcr_r;
+	cairo_t *graphYcr_g;
+	cairo_t *graphYcr_b;
 	cairo_t *whiteXcr;
 	cairo_t *whiteYcr;
 	// どちらかが宣言されていなければ終了
@@ -72,33 +79,96 @@ draw_graph(void)
 	cairo_destroy(whiteXcr);
 	cairo_destroy(whiteYcr);
 	// GdkWindow からコンテキストを生成
-	graphXcr = gdk_cairo_create (graphXdrawable);
-	graphYcr = gdk_cairo_create (graphYdrawable);
+	graphXcr   = gdk_cairo_create (graphXdrawable);
+	graphXcr_r = gdk_cairo_create (graphXdrawable);
+	graphXcr_g = gdk_cairo_create (graphXdrawable);
+	graphXcr_b = gdk_cairo_create (graphXdrawable);
+	graphYcr   = gdk_cairo_create (graphYdrawable);
+	graphYcr_r = gdk_cairo_create (graphYdrawable);
+	graphYcr_g = gdk_cairo_create (graphYdrawable);
+	graphYcr_b = gdk_cairo_create (graphYdrawable);
+
+	// 色選択
+	cairo_set_source_rgb(graphXcr_r,1,0,0);
+	cairo_set_source_rgb(graphXcr_g,0,1,0);
+	cairo_set_source_rgb(graphXcr_b,0,0,1);
+	cairo_set_source_rgb(graphYcr_r,1,0,0);
+	cairo_set_source_rgb(graphYcr_g,0,1,0);
+	cairo_set_source_rgb(graphYcr_b,0,0,1);
 	// pixel 取得
 	pixel = gdk_pixbuf_get_pixels(pixbufdata);
-	// graph X 描画
-	for(i = 0;i < w*3;i+=3)
+	// グレイスケール
+	if(graphline)
 	{
-		line = xline * w * 3;
-		luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
-		cairo_rectangle (graphXcr, i/3,255 - luminance,2, 2);
+		// graph X 描画
+		for(i = 0;i < w*3;i+=3)
+		{
+			line = xline * w * 3;
+			luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
+			cairo_rectangle (graphXcr, i/3,255 - luminance,2, 2);
+		}
+		// graph Y 描画
+		for(i = 0;i < h*3;i+=3)
+		{
+			line = yline * 3 + w * i;
+			luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
+			cairo_rectangle (graphYcr, 255-luminance,i/3,2, 2);
+		}
 	}
+	// 三色
+	else
+	{
+		// graph X 描画
+		for(i = 0;i < w*3;i+=3)
+		{
+			line = xline * w * 3;
+			luminance = (int)pixel[i+0+line];
+			cairo_rectangle (graphXcr_r, i/3,255 - luminance,2, 2);
+			luminance = (int)pixel[i+1+line];
+			cairo_rectangle (graphXcr_g, i/3,255 - luminance,2, 2);
+			luminance = (int)pixel[i+2+line];
+			cairo_rectangle (graphXcr_b, i/3,255 - luminance,2, 2);
+
+		}
+		// graph Y 描画
+		for(i = 0;i < h*3;i+=3)
+		{
+			line = yline * 3 + w * i;
+			luminance = (int)pixel[0 + line];
+			cairo_rectangle (graphYcr_r, 255-luminance,i/3,2, 2);
+			luminance = (int)pixel[1 + line];
+			cairo_rectangle (graphYcr_g, 255-luminance,i/3,2, 2);
+			luminance = (int)pixel[2 + line];
+			cairo_rectangle (graphYcr_b, 255-luminance,i/3,2, 2);
+		}
+	}
+
 	cairo_rectangle(graphXcr,0,0,w,1);
 	cairo_rectangle(graphXcr,0,127,w,1);
 	cairo_rectangle(graphXcr,0,255,w,1);
-	// graph Y 描画
-	for(i = 0;i < h*3;i+=3)
-	{
-		line = yline * 3 + w * i;
-		luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
-		cairo_rectangle (graphYcr, 255-luminance,i/3,2, 2);
-	}
+
 	cairo_rectangle(graphYcr,0,0,1,h);
 	cairo_rectangle(graphYcr,127,0,1,h);
 	cairo_rectangle(graphYcr,255,0,1,h);
 
 	cairo_fill(graphXcr);
 	cairo_fill(graphYcr);
+	if(!graphline)
+	{
+		cairo_fill(graphXcr_r);
+		cairo_fill(graphXcr_g);
+		cairo_fill(graphXcr_b);
+		cairo_fill(graphYcr_r);
+		cairo_fill(graphYcr_g);
+		cairo_fill(graphYcr_b);
+		
+		cairo_destroy(graphXcr_r);
+		cairo_destroy(graphXcr_g);
+		cairo_destroy(graphXcr_b);
+		cairo_destroy(graphYcr_r);
+		cairo_destroy(graphYcr_g);
+		cairo_destroy(graphYcr_b);
+	}
 	cairo_destroy(graphXcr);
 	cairo_destroy(graphYcr);
 	
@@ -177,6 +247,19 @@ void cb_leftButton(GtkWidget *widget, gpointer user_data)
 {
 	if(yline > 0){
 		yline--;
+	}
+	draw_display();
+	draw_graph();
+}
+void cb_gray3colorButton(GtkWidget *widget, gpointer user_data)
+{
+	if(graphline)
+	{
+		graphline = 0;
+	}
+	else
+	{
+		graphline = 1;
 	}
 	draw_display();
 	draw_graph();

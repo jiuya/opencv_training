@@ -21,6 +21,7 @@ typedef struct main_dialog_type {
 	GtkWidget *rightButton;
 	GtkWidget *leftButton;
 	GtkWidget *downButton;
+	GtkWidget *gray3colorButton;
 	GdkPixbuf *pixbuf;;
 	GtkWidget *vbox;
 	GtkWidget *imgVbox;
@@ -53,6 +54,8 @@ void cb_downButton(GtkWidget *widget, gpointer user_data);
 void cb_rightButton(GtkWidget *widget, gpointer user_data);
 // button left イベント
 void cb_leftButton(GtkWidget *widget, gpointer user_data);
+// button gray/3color 切り替え イベント
+void cb_gray3colorButton(GtkWidget *widget, gpointer user_data);
 
 void cb_open(GtkAction *action, gpointer user_data);
 

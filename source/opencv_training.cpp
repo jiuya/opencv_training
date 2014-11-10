@@ -120,10 +120,14 @@ int main(int argc, char ** argv)
 		dialog.leftButton = gtk_button_new_with_label("LEFT");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.leftButton,FALSE,FALSE,0);
 
+		dialog.gray3colorButton = gtk_button_new_with_label("GRAY/3COLOR");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.gray3colorButton,FALSE,FALSE,0);
+
 		g_signal_connect(G_OBJECT(dialog.upButton), "clicked", G_CALLBACK(cb_upButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.downButton), "clicked", G_CALLBACK(cb_downButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.rightButton), "clicked", G_CALLBACK(cb_rightButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.leftButton), "clicked", G_CALLBACK(cb_leftButton), NULL);
+		g_signal_connect(G_OBJECT(dialog.gray3colorButton), "clicked", G_CALLBACK(cb_gray3colorButton), NULL);
 	}
 
 	gtk_widget_show_all(dialog.window);
