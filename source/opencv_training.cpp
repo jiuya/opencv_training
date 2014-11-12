@@ -1,5 +1,5 @@
-#include"opencv_training.h"
-
+//#include"opencv_training.h"
+#include"../include/opencv_training.h"
 static const gchar *menu_info =
   "<ui>"
   "  <menubar name='Menubar'>"
@@ -40,7 +40,6 @@ int main(int argc, char ** argv)
 	GError *error = NULL;
 
 	gtk_init(&argc,&argv);
-	
 	// windowの設定
 	dialog.window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_widget_set_size_request(dialog.window,300,200);
@@ -119,15 +118,19 @@ int main(int argc, char ** argv)
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.rightButton,FALSE,FALSE,0);
 		dialog.leftButton = gtk_button_new_with_label("LEFT");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.leftButton,FALSE,FALSE,0);
-
+		// ３色からの輝度グラフを表示するのと３色それぞれのグラフを表示するのを切り替えるボタン
 		dialog.gray3colorButton = gtk_button_new_with_label("GRAY/3COLOR");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.gray3colorButton,FALSE,FALSE,0);
+		// グラフに表示する内容を切り替える（輝度断面＜ー＞FFT）
+		dialog.switchingFFTlumButton = gtk_button_new_with_label("輝度/FFT");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.switchingFFTlumButton,FALSE,FALSE,0);
 
 		g_signal_connect(G_OBJECT(dialog.upButton), "clicked", G_CALLBACK(cb_upButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.downButton), "clicked", G_CALLBACK(cb_downButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.rightButton), "clicked", G_CALLBACK(cb_rightButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.leftButton), "clicked", G_CALLBACK(cb_leftButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.gray3colorButton), "clicked", G_CALLBACK(cb_gray3colorButton), NULL);
+		g_signal_connect(G_OBJECT(dialog.switchingFFTlumButton), "clicked", G_CALLBACK(cb_switchingFFTlumButton), NULL);
 	}
 
 	gtk_widget_show_all(dialog.window);

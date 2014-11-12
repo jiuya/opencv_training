@@ -1,4 +1,4 @@
-#include"opencv_training.h"
+#include"../include/opencv_training.h"
 
 // cairo_surface_t *surface = NULL;
 static GdkWindow *drowable;
@@ -95,10 +95,11 @@ draw_graph(void)
 	cairo_set_source_rgb(graphYcr_r,1,0,0);
 	cairo_set_source_rgb(graphYcr_g,0,1,0);
 	cairo_set_source_rgb(graphYcr_b,0,0,1);
+		
 	// pixel 取得
 	pixel = gdk_pixbuf_get_pixels(pixbufdata);
 	// グレイスケール
-	if(graphline)
+	if(graphline & 1)
 	{
 		// graph X 描画
 		for(i = 0;i < w*3;i+=3)
@@ -153,7 +154,7 @@ draw_graph(void)
 
 	cairo_fill(graphXcr);
 	cairo_fill(graphYcr);
-	if(!graphline)
+	if(!(graphline & 1))
 	{
 		cairo_fill(graphXcr_r);
 		cairo_fill(graphXcr_g);
@@ -253,13 +254,26 @@ void cb_leftButton(GtkWidget *widget, gpointer user_data)
 }
 void cb_gray3colorButton(GtkWidget *widget, gpointer user_data)
 {
-	if(graphline)
+	if(graphline & 1)
 	{
-		graphline = 0;
+		graphline &= 2;
 	}
 	else
 	{
-		graphline = 1;
+		graphline |= 1;
+	}
+	draw_display();
+	draw_graph();
+}
+void cb_switchingFFTlumButton(GtkWidget *widget, gpointer user_data)
+{
+	if(graphline & 2)
+	{
+		graphline &= 1;
+	}
+	else
+	{
+		graphline |= 2;
 	}
 	draw_display();
 	draw_graph();

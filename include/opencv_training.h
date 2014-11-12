@@ -1,17 +1,18 @@
 #ifndef OPENCV_TRAINING_H
 #define OPENCV_TRAINING_H
-#include <iostream>
-#include <stdlib.h>
-#include <math.h>
+//#include <iostream>
+//#include <stdlib.h>
+//#include <math.h>
 
 // OpenCV
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-// GTK+-2.0
+// GTK+-3.0
 #include<gtk/gtk.h>
 #include<gdk/gdk.h>
+#include<cairo.h>
 
 // 構造体でウィジットを指定
 typedef struct main_dialog_type {
@@ -22,6 +23,7 @@ typedef struct main_dialog_type {
 	GtkWidget *leftButton;
 	GtkWidget *downButton;
 	GtkWidget *gray3colorButton;
+	GtkWidget *switchingFFTlumButton;
 	GdkPixbuf *pixbuf;;
 	GtkWidget *vbox;
 	GtkWidget *imgVbox;
@@ -56,6 +58,8 @@ void cb_rightButton(GtkWidget *widget, gpointer user_data);
 void cb_leftButton(GtkWidget *widget, gpointer user_data);
 // button gray/3color 切り替え イベント
 void cb_gray3colorButton(GtkWidget *widget, gpointer user_data);
+// button FFT 輝度断面切り替え　イベント
+void cb_switchingFFTlumButton(GtkWidget *widget, gpointer user_data);
 
 void cb_open(GtkAction *action, gpointer user_data);
 
