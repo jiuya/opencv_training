@@ -48,18 +48,17 @@ draw_display(void)
 static void
 draw_graph(void)
 {
-	int i;
-	int luminance;
+	int i,j;
+	guchar luminance;
 	long line;
+	double *linexBuffer[3];
+	double *lineyBuffer[3];
 	guchar *pixel;
-	cairo_t *graphXcr;
-	cairo_t *graphXcr_r;
-	cairo_t *graphXcr_g;
-	cairo_t *graphXcr_b;
-	cairo_t *graphYcr;
-	cairo_t *graphYcr_r;
-	cairo_t *graphYcr_g;
-	cairo_t *graphYcr_b;
+	cairo_t *graphXcr[3];
+	cairo_t *graphYcr[3];
+	cairo_t *graphbar;
+	cairo_t *graphbarX;
+	cairo_t *graphbarY;
 	cairo_t *whiteXcr;
 	cairo_t *whiteYcr;
 	// どちらかが宣言されていなければ終了
@@ -79,100 +78,221 @@ draw_graph(void)
 	cairo_destroy(whiteXcr);
 	cairo_destroy(whiteYcr);
 	// GdkWindow からコンテキストを生成
-	graphXcr   = gdk_cairo_create (graphXdrawable);
-	graphXcr_r = gdk_cairo_create (graphXdrawable);
-	graphXcr_g = gdk_cairo_create (graphXdrawable);
-	graphXcr_b = gdk_cairo_create (graphXdrawable);
-	graphYcr   = gdk_cairo_create (graphYdrawable);
-	graphYcr_r = gdk_cairo_create (graphYdrawable);
-	graphYcr_g = gdk_cairo_create (graphYdrawable);
-	graphYcr_b = gdk_cairo_create (graphYdrawable);
+	graphXcr[0]   = gdk_cairo_create (graphXdrawable);
+	graphXcr[1]   = gdk_cairo_create (graphXdrawable);
+	graphXcr[2]   = gdk_cairo_create (graphXdrawable);
+	graphYcr[0]   = gdk_cairo_create (graphYdrawable);
+	graphYcr[1]   = gdk_cairo_create (graphYdrawable);
+	graphYcr[2]   = gdk_cairo_create (graphYdrawable);
+	graphbarX	  = gdk_cairo_create (graphXdrawable);
+	graphbarY	  = gdk_cairo_create (graphYdrawable);
 
 	// 色選択
-	cairo_set_source_rgb(graphXcr_r,1,0,0);
-	cairo_set_source_rgb(graphXcr_g,0,1,0);
-	cairo_set_source_rgb(graphXcr_b,0,0,1);
-	cairo_set_source_rgb(graphYcr_r,1,0,0);
-	cairo_set_source_rgb(graphYcr_g,0,1,0);
-	cairo_set_source_rgb(graphYcr_b,0,0,1);
-		
-	// pixel 取得
-	pixel = gdk_pixbuf_get_pixels(pixbufdata);
-	// グレイスケール
-	if(graphline & 1)
-	{
-		// graph X 描画
-		for(i = 0;i < w*3;i+=3)
-		{
-			line = xline * w * 3;
-			luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
-			cairo_rectangle (graphXcr, i/3,255 - luminance,2, 2);
-		}
-		// graph Y 描画
-		for(i = 0;i < h*3;i+=3)
-		{
-			line = yline * 3 + w * i;
-			luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
-			cairo_rectangle (graphYcr, 255-luminance,i/3,2, 2);
-		}
-	}
-	// 三色
-	else
-	{
-		// graph X 描画
-		for(i = 0;i < w*3;i+=3)
-		{
-			line = xline * w * 3;
-			luminance = (int)pixel[i+0+line];
-			cairo_rectangle (graphXcr_r, i/3,255 - luminance,2, 2);
-			luminance = (int)pixel[i+1+line];
-			cairo_rectangle (graphXcr_g, i/3,255 - luminance,2, 2);
-			luminance = (int)pixel[i+2+line];
-			cairo_rectangle (graphXcr_b, i/3,255 - luminance,2, 2);
-
-		}
-		// graph Y 描画
-		for(i = 0;i < h*3;i+=3)
-		{
-			line = yline * 3 + w * i;
-			luminance = (int)pixel[0 + line];
-			cairo_rectangle (graphYcr_r, 255-luminance,i/3,2, 2);
-			luminance = (int)pixel[1 + line];
-			cairo_rectangle (graphYcr_g, 255-luminance,i/3,2, 2);
-			luminance = (int)pixel[2 + line];
-			cairo_rectangle (graphYcr_b, 255-luminance,i/3,2, 2);
-		}
-	}
-
-	cairo_rectangle(graphXcr,0,0,w,1);
-	cairo_rectangle(graphXcr,0,127,w,1);
-	cairo_rectangle(graphXcr,0,255,w,1);
-
-	cairo_rectangle(graphYcr,0,0,1,h);
-	cairo_rectangle(graphYcr,127,0,1,h);
-	cairo_rectangle(graphYcr,255,0,1,h);
-
-	cairo_fill(graphXcr);
-	cairo_fill(graphYcr);
 	if(!(graphline & 1))
 	{
-		cairo_fill(graphXcr_r);
-		cairo_fill(graphXcr_g);
-		cairo_fill(graphXcr_b);
-		cairo_fill(graphYcr_r);
-		cairo_fill(graphYcr_g);
-		cairo_fill(graphYcr_b);
-		
-		cairo_destroy(graphXcr_r);
-		cairo_destroy(graphXcr_g);
-		cairo_destroy(graphXcr_b);
-		cairo_destroy(graphYcr_r);
-		cairo_destroy(graphYcr_g);
-		cairo_destroy(graphYcr_b);
+		cairo_set_source_rgb(graphXcr[0],1,0,0);
+		cairo_set_source_rgb(graphXcr[1],0,1,0);
+		cairo_set_source_rgb(graphXcr[2],0,0,1);
+		cairo_set_source_rgb(graphYcr[0],1,0,0);
+		cairo_set_source_rgb(graphYcr[1],0,1,0);
+		cairo_set_source_rgb(graphYcr[2],0,0,1);
+	}	
+	// pixel 取得
+	pixel = gdk_pixbuf_get_pixels(pixbufdata);
+	// FFT切り替え
+	if(graphline & 2)
+	{
+		linexBuffer[0] = (double *)malloc(sizeof(double) * w);
+		lineyBuffer[0] = (double *)malloc(sizeof(double) * h);
+		// グレイスケール
+		if(graphline & 1)
+		{
+			// graph X 描画
+			for(i = 0;i < w*3;i+=3)
+			{
+				line = xline * w * 3;
+				luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
+				linexBuffer[0][i/3] = (double)luminance;
+			}
+			// graph Y 描画
+			for(i = 0;i < h*3;i+=3)
+			{
+				line = yline * 3 + w * i;
+				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
+				lineyBuffer[0][i/3] = (double)luminance;
+			}
+			cv::Mat linexBufferMat(1,w,CV_32FC1,linexBuffer[0]);
+			cv::Mat lineyBufferMat(1,h,CV_32FC1,lineyBuffer[0]);
+			cv::Mat linexBufferDFTOut(1,w,CV_32FC1);
+			cv::Mat lineyBufferDFTOut(1,h,CV_32FC1);
+			cv::dft(linexBufferMat,linexBufferDFTOut,0,0);
+			cv::dft(lineyBufferMat,lineyBufferDFTOut,0,0);
+			// 4で割るのはDFTで半分、有効なデータが半分だからである
+			for(i = 0;i < w/4;i++)
+			{
+				cairo_rectangle (graphXcr[0], i*4,128,2,(int)(linexBufferDFTOut.at<double>(i)));
+			}
+			for(i = 0;i < h/4;i++)
+			{
+				cairo_rectangle (graphYcr[0],128,i*4,(int)(lineyBufferDFTOut.at<double>(i)), 2);
+			}
+			if(linexBuffer[0])
+			{
+				free(linexBuffer[0]);
+				linexBuffer[0] = NULL;
+			}
+			if(lineyBuffer[0])
+			{
+				free(lineyBuffer[0]);
+				lineyBuffer[0] = NULL;
+			}
+		}
+		// 三色
+		else
+		{
+			linexBuffer[1] = (double *)malloc(sizeof(double) * w);
+			lineyBuffer[1] = (double *)malloc(sizeof(double) * h);
+			linexBuffer[2] = (double *)malloc(sizeof(double) * w);
+			lineyBuffer[2] = (double *)malloc(sizeof(double) * h);
+			
+			// graph X 
+			for(i = 0;i < w*3;i+=3)
+			{
+				line = xline * w * 3;
+				luminance = (int)pixel[i+0+line];
+				linexBuffer[0][i/3] = (double)luminance;
+				luminance = (int)pixel[i+1+line];
+				linexBuffer[1][i/3] = (double)luminance;
+				luminance = (int)pixel[i+2+line];
+				linexBuffer[2][i/3] = (double)luminance;
+			}
+			// graph Y 
+			for(i = 0;i < h*3;i+=3)
+			{
+				line = yline * 3 + w * i;
+				luminance = (int)pixel[0 + line];
+				lineyBuffer[0][i/3] = (double)luminance;
+				luminance = (int)pixel[1 + line];
+				lineyBuffer[1][i/3] = (double)luminance;
+				luminance = (int)pixel[2 + line];
+				lineyBuffer[2][i/3] = (double)luminance;
+			}
+			cv::Mat linexBufferDFTOut(1,w,CV_32FC1);
+			cv::Mat lineyBufferDFTOut(1,h,CV_32FC1);
+			for(j = 0;j < 3;j++)
+			{
+				cv::Mat linexBufferMat(1,w,CV_32FC1,linexBuffer[j]);
+				cv::Mat lineyBufferMat(1,h,CV_32FC1,lineyBuffer[j]);
+				cv::dft(linexBufferMat,linexBufferDFTOut,0,0);
+				cv::dft(lineyBufferMat,lineyBufferDFTOut,0,0);
+				// 4で割るのはDFTで半分、有効なデータが半分だからである
+				for(i = 0;i < w/4;i++)
+				{
+					cairo_rectangle (graphXcr[j], i*4+j,128,1,(int)(linexBufferDFTOut.at<double>(i)));
+				}
+				for(i = 0;i < h/4;i++)
+				{
+					cairo_rectangle (graphYcr[j],128,i*4+j,(int)(lineyBufferDFTOut.at<double>(i)), 1);
+				}
+				if(linexBuffer[j])
+				{
+					free(linexBuffer[j]);
+					linexBuffer[j] = NULL;
+				}
+				if(lineyBuffer[j])
+				{
+					free(lineyBuffer[j]);
+					lineyBuffer[j] = NULL;
+				}
+			}
+		}
 	}
-	cairo_destroy(graphXcr);
-	cairo_destroy(graphYcr);
-	
+	// Not FFT
+	else
+	{
+		// グレイスケール
+		if(graphline & 1)
+		{
+			// graph X 描画
+			for(i = 0;i < w*3;i+=3)
+			{
+				line = xline * w * 3;
+				luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
+				cairo_rectangle (graphXcr[0], i/3,255 - luminance,2, 2);
+			}
+			// graph Y 描画
+			for(i = 0;i < h*3;i+=3)
+			{
+				line = yline * 3 + w * i;
+				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
+				cairo_rectangle (graphYcr[0], 255-luminance,i/3,2, 2);
+			}
+		}
+		// 三色
+		else
+		{
+			// graph X 描画
+			for(i = 0;i < w*3;i+=3)
+			{
+				line = xline * w * 3;
+				luminance = (int)pixel[i+0+line];
+				cairo_rectangle (graphXcr[0], i/3,255 - luminance,2, 2);
+				luminance = (int)pixel[i+1+line];
+				cairo_rectangle (graphXcr[1], i/3,255 - luminance,2, 2);
+				luminance = (int)pixel[i+2+line];
+				cairo_rectangle (graphXcr[2], i/3,255 - luminance,2, 2);
+
+			}
+			// graph Y 描画
+			for(i = 0;i < h*3;i+=3)
+			{
+				line = yline * 3 + w * i;
+				luminance = (int)pixel[0 + line];
+				cairo_rectangle (graphYcr[0], 255-luminance,i/3,2, 2);
+				luminance = (int)pixel[1 + line];
+				cairo_rectangle (graphYcr[1], 255-luminance,i/3,2, 2);
+				luminance = (int)pixel[2 + line];
+				cairo_rectangle (graphYcr[2], 255-luminance,i/3,2, 2);
+			}
+		}
+	}
+	cairo_rectangle(graphbarX,0,0,w,1);
+	cairo_rectangle(graphbarX,0,127,w,1);
+	cairo_rectangle(graphbarX,0,255,w,1);
+
+	cairo_rectangle(graphbarY,0,0,1,h);
+	cairo_rectangle(graphbarY,127,0,1,h);
+	cairo_rectangle(graphbarY,255,0,1,h);
+
+	cairo_fill(graphbarX);
+	cairo_fill(graphbarY);
+	cairo_destroy(graphbarX);
+	cairo_destroy(graphbarY);
+
+	if(!(graphline & 1))
+	{
+		cairo_fill(graphXcr[0]);
+		cairo_fill(graphXcr[1]);
+		cairo_fill(graphXcr[2]);
+		cairo_fill(graphYcr[0]);
+		cairo_fill(graphYcr[1]);
+		cairo_fill(graphYcr[2]);
+		
+		cairo_destroy(graphXcr[0]);
+		cairo_destroy(graphXcr[1]);
+		cairo_destroy(graphXcr[2]);
+		cairo_destroy(graphYcr[0]);
+		cairo_destroy(graphYcr[1]);
+		cairo_destroy(graphYcr[2]);
+	}
+	else
+	{
+		
+		cairo_fill(graphXcr[0]);
+		cairo_fill(graphYcr[0]);
+		cairo_destroy(graphXcr[0]);
+		cairo_destroy(graphYcr[0]);
+	}	
 //	gtk_widget_set_size_request(dialog->window,w+10+10+255+100,h+10+10);
 }
 // expose event

@@ -1,7 +1,7 @@
 #ifndef OPENCV_TRAINING_H
 #define OPENCV_TRAINING_H
 //#include <iostream>
-//#include <stdlib.h>
+#include <stdlib.h>
 //#include <math.h>
 
 // OpenCV
