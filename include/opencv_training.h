@@ -2,7 +2,7 @@
 #define OPENCV_TRAINING_H
 //#include <iostream>
 #include <stdlib.h>
-//#include <math.h>
+#include <math.h>
 
 // OpenCV
 #include <opencv2/core/core.hpp>

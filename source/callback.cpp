@@ -49,6 +49,8 @@ static void
 draw_graph(void)
 {
 	int i,j;
+	int rows;
+	int channel;
 	guchar luminance;
 	long line;
 	double *linexBuffer[3];
@@ -56,7 +58,6 @@ draw_graph(void)
 	guchar *pixel;
 	cairo_t *graphXcr[3];
 	cairo_t *graphYcr[3];
-	cairo_t *graphbar;
 	cairo_t *graphbarX;
 	cairo_t *graphbarY;
 	cairo_t *whiteXcr;
@@ -99,6 +100,9 @@ draw_graph(void)
 	}	
 	// pixel 取得
 	pixel = gdk_pixbuf_get_pixels(pixbufdata);
+	channel = gdk_pixbuf_get_n_channels(pixbufdata);
+	rows = gdk_pixbuf_get_rowstride(pixbufdata);
+	//g_print("rows = %d\n",rows);
 	// FFT切り替え
 	if(graphline & 2)
 	{
@@ -108,18 +112,18 @@ draw_graph(void)
 		if(graphline & 1)
 		{
 			// graph X 描画
-			for(i = 0;i < w*3;i+=3)
+			for(i = 0;i < w;i++)
 			{
-				line = xline * w * 3;
-				luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
-				linexBuffer[0][i/3] = (double)luminance;
+				line = xline * rows + i * 3;
+				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
+				linexBuffer[0][i] = (double)luminance;
 			}
 			// graph Y 描画
-			for(i = 0;i < h*3;i+=3)
+			for(i = 0;i < h;i++)
 			{
-				line = yline * 3 + w * i;
+				line = yline * 3 + rows * i;
 				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
-				lineyBuffer[0][i/3] = (double)luminance;
+				lineyBuffer[0][i] = (double)luminance;
 			}
 			cv::Mat linexBufferMat(1,w,CV_32FC1,linexBuffer[0]);
 			cv::Mat lineyBufferMat(1,h,CV_32FC1,lineyBuffer[0]);
@@ -130,11 +134,11 @@ draw_graph(void)
 			// 4で割るのはDFTで半分、有効なデータが半分だからである
 			for(i = 0;i < w/4;i++)
 			{
-				cairo_rectangle (graphXcr[0], i*4,128,2,(int)(linexBufferDFTOut.at<double>(i)));
+				cairo_rectangle (graphXcr[0], i*4,255,2,255-(int)pow(linexBufferDFTOut.at<double>(i)/2,2));
 			}
 			for(i = 0;i < h/4;i++)
 			{
-				cairo_rectangle (graphYcr[0],128,i*4,(int)(lineyBufferDFTOut.at<double>(i)), 2);
+				cairo_rectangle (graphYcr[0],255,i*4,255-(int)pow(lineyBufferDFTOut.at<double>(i)/2,2), 2);
 			}
 			if(linexBuffer[0])
 			{
@@ -156,26 +160,26 @@ draw_graph(void)
 			lineyBuffer[2] = (double *)malloc(sizeof(double) * h);
 			
 			// graph X 
-			for(i = 0;i < w*3;i+=3)
+			for(i = 0;i < w;i++)
 			{
-				line = xline * w * 3;
-				luminance = (int)pixel[i+0+line];
-				linexBuffer[0][i/3] = (double)luminance;
-				luminance = (int)pixel[i+1+line];
-				linexBuffer[1][i/3] = (double)luminance;
-				luminance = (int)pixel[i+2+line];
-				linexBuffer[2][i/3] = (double)luminance;
+				line = xline * rows + i * 3;
+				luminance = (int)pixel[0+line];
+				linexBuffer[0][i] = (double)luminance;
+				luminance = (int)pixel[1+line];
+				linexBuffer[1][i] = (double)luminance;
+				luminance = (int)pixel[2+line];
+				linexBuffer[2][i] = (double)luminance;
 			}
 			// graph Y 
-			for(i = 0;i < h*3;i+=3)
+			for(i = 0;i < h;i++)
 			{
-				line = yline * 3 + w * i;
+				line = yline * 3 + rows * i;
 				luminance = (int)pixel[0 + line];
-				lineyBuffer[0][i/3] = (double)luminance;
+				lineyBuffer[0][i] = (double)luminance;
 				luminance = (int)pixel[1 + line];
-				lineyBuffer[1][i/3] = (double)luminance;
+				lineyBuffer[1][i] = (double)luminance;
 				luminance = (int)pixel[2 + line];
-				lineyBuffer[2][i/3] = (double)luminance;
+				lineyBuffer[2][i] = (double)luminance;
 			}
 			cv::Mat linexBufferDFTOut(1,w,CV_32FC1);
 			cv::Mat lineyBufferDFTOut(1,h,CV_32FC1);
@@ -214,45 +218,45 @@ draw_graph(void)
 		if(graphline & 1)
 		{
 			// graph X 描画
-			for(i = 0;i < w*3;i+=3)
+			for(i = 0;i < w;i++)
 			{
-				line = xline * w * 3;
-				luminance = (int)(77 * pixel[i + 0 + line] + 150 * pixel[i + 1 + line] + 29 * pixel[i + 2 + line]) >> 8;
-				cairo_rectangle (graphXcr[0], i/3,255 - luminance,2, 2);
+				line = xline * rows + i * 3;
+				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
+				cairo_rectangle (graphXcr[0], i,255 - luminance,2, 2);
 			}
 			// graph Y 描画
-			for(i = 0;i < h*3;i+=3)
+			for(i = 0;i < h;i++)
 			{
-				line = yline * 3 + w * i;
+				line = yline * 3 + rows * i;
 				luminance = (int)(77 * pixel[0 + line] + 150 * pixel[1 + line] + 29 * pixel[2 + line]) >> 8;
-				cairo_rectangle (graphYcr[0], 255-luminance,i/3,2, 2);
+				cairo_rectangle (graphYcr[0], 255-luminance,i,2, 2);
 			}
 		}
 		// 三色
 		else
 		{
 			// graph X 描画
-			for(i = 0;i < w*3;i+=3)
+			for(i = 0;i < w;i++)
 			{
-				line = xline * w * 3;
-				luminance = (int)pixel[i+0+line];
-				cairo_rectangle (graphXcr[0], i/3,255 - luminance,2, 2);
-				luminance = (int)pixel[i+1+line];
-				cairo_rectangle (graphXcr[1], i/3,255 - luminance,2, 2);
-				luminance = (int)pixel[i+2+line];
-				cairo_rectangle (graphXcr[2], i/3,255 - luminance,2, 2);
+				line = xline * rows + i * 3;
+				luminance = (int)pixel[0+line];
+				cairo_rectangle (graphXcr[0], i,255 - luminance,2, 2);
+				luminance = (int)pixel[1+line];
+				cairo_rectangle (graphXcr[1], i,255 - luminance,2, 2);
+				luminance = (int)pixel[2+line];
+				cairo_rectangle (graphXcr[2], i,255 - luminance,2, 2);
 
 			}
 			// graph Y 描画
-			for(i = 0;i < h*3;i+=3)
+			for(i = 0;i < h;i++)
 			{
-				line = yline * 3 + w * i;
+				line = yline * 3 + rows * i;
 				luminance = (int)pixel[0 + line];
-				cairo_rectangle (graphYcr[0], 255-luminance,i/3,2, 2);
+				cairo_rectangle (graphYcr[0], 255-luminance,i,2, 2);
 				luminance = (int)pixel[1 + line];
-				cairo_rectangle (graphYcr[1], 255-luminance,i/3,2, 2);
+				cairo_rectangle (graphYcr[1], 255-luminance,i,2, 2);
 				luminance = (int)pixel[2 + line];
-				cairo_rectangle (graphYcr[2], 255-luminance,i/3,2, 2);
+				cairo_rectangle (graphYcr[2], 255-luminance,i,2, 2);
 			}
 		}
 	}

@@ -103,6 +103,7 @@ int main(int argc, char ** argv)
 		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.graphX,TRUE,TRUE,0);
 		g_signal_connect(G_OBJECT(dialog.graphX),"draw",
 									G_CALLBACK(cb_graphX),0);
+
 	}
 
 	// 操作用box
