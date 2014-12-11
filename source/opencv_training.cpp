@@ -97,12 +97,26 @@ int main(int argc, char ** argv)
 		// グラフx用 hbox
 		dialog.imgHbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.imgHbox,TRUE,TRUE,5);
+
 		// グラフx用 drawing_area
+		dialog.scaleImgVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.scaleImgVbox,TRUE,TRUE,0);
+
 		dialog.graphX = gtk_drawing_area_new();
 		gtk_widget_set_size_request(dialog.graphX,300,256);
-		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.graphX,TRUE,TRUE,0);
+		gtk_box_pack_start(GTK_BOX(dialog.scaleImgVbox),dialog.graphX,TRUE,TRUE,0);
 		g_signal_connect(G_OBJECT(dialog.graphX),"draw",
 									G_CALLBACK(cb_graphX),0);
+		// 拡大・縮小用 vbox
+		dialog.scaleImgVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.scaleImgVbox,FALSE,FALSE,5);
+		
+		dialog.scaleImg = gtk_drawing_area_new();
+		gtk_widget_set_size_request(dialog.scaleImg,256,256);
+		gtk_box_pack_start(GTK_BOX(dialog.scaleImgVbox),dialog.scaleImg,TRUE,TRUE,0);
+		g_signal_connect(G_OBJECT(dialog.scaleImg),"draw",
+									G_CALLBACK(cb_scaleImg),0);
+
 
 	}
 

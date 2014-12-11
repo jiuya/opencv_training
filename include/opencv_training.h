@@ -29,9 +29,11 @@ typedef struct main_dialog_type {
 	GtkWidget *imgVbox;
 	GtkWidget *hbox;
 	GtkWidget *imgHbox;
+	GtkWidget *scaleImgVbox;
 	GtkWidget *drowingarea;
 	GtkWidget *graphX;
 	GtkWidget *graphY;
+	GtkWidget *scaleImg;
 } MainDialog;
 // expose event
 gboolean cb_expose(	GtkWidget *widget,
@@ -47,6 +49,12 @@ gboolean
 cb_graphY(	GtkWidget *widget,
 			GdkEventExpose *event,
 			gpointer data);
+// scaleimg draw event
+gboolean
+cb_scaleImg(GtkWidget *widget,
+			GdkEventExpose *event,
+			gpointer data);
+
 
 // button up イベント
 void cb_upButton(GtkWidget *widget, gpointer user_data);
