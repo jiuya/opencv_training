@@ -172,6 +172,11 @@ draw_graph(void)
 	cairo_t *graphbarY;
 	cairo_t *whiteXcr;
 	cairo_t *whiteYcr;
+	cairo_t *line_x_low;
+	cairo_t *line_y_low;
+	cairo_t *line_x_high;
+	cairo_t *line_y_high;
+
 	// どちらかが宣言されていなければ終了
 	if((graphXdrawable == NULL) || (graphYdrawable == NULL))
 	{
@@ -197,6 +202,21 @@ draw_graph(void)
 	graphYcr[2]   = gdk_cairo_create (graphYdrawable);
 	graphbarX	  = gdk_cairo_create (graphXdrawable);
 	graphbarY	  = gdk_cairo_create (graphYdrawable);
+	// line x, line y のコンテキストを生成
+	line_x_low = gdk_cairo_create(graphXdrawable);
+	line_x_high = gdk_cairo_create(graphXdrawable);
+	line_y_low = gdk_cairo_create(graphYdrawable);
+	line_y_high = gdk_cairo_create(graphYdrawable);
+	// line x, line y のパスを生成
+	cairo_set_source_rgb(line_x_low,1,0,0);
+	cairo_set_source_rgb(line_x_high,1,0,0);
+	cairo_set_source_rgb(line_y_low,1,0,0);
+	cairo_set_source_rgb(line_y_high,1,0,0);
+	cairo_rectangle(line_x_low ,0,255 - noise_lowThreshold ,w,1);
+	cairo_rectangle(line_x_high,0,255 - noise_highThreshold,w,1);
+	cairo_rectangle(line_y_low ,255 - noise_lowThreshold ,0,1,h);
+	cairo_rectangle(line_y_high,255 - noise_highThreshold,0,1,h);
+
 
 	// 色選択
 	if(!(graphline & 1))
@@ -406,7 +426,19 @@ draw_graph(void)
 		cairo_fill(graphYcr[0]);
 		cairo_destroy(graphXcr[0]);
 		cairo_destroy(graphYcr[0]);
-	}	
+		if(!(graphline & 2))
+		{
+			cairo_fill(line_x_low);
+			cairo_fill(line_x_high);
+			cairo_fill(line_y_low);
+			cairo_fill(line_y_high);
+
+			cairo_destroy(line_x_low);
+			cairo_destroy(line_x_high);
+			cairo_destroy(line_y_low);
+			cairo_destroy(line_y_high);
+		}
+	}
 //	gtk_widget_set_size_request(dialog->window,w+10+10+255+100,h+10+10);
 }
 // expose event
@@ -584,18 +616,21 @@ void cb_lowThreshold_changed(GtkSpinButton *spinbutton, gpointer data)
 {
 	noise_lowThreshold = gtk_spin_button_get_value(spinbutton);
 	draw_noiseDisplay();
+	draw_graph();
 }
 
 void cb_highThreshold_changed(GtkSpinButton *spinbutton, gpointer data)
 {
 	noise_highThreshold = gtk_spin_button_get_value(spinbutton);
 	draw_noiseDisplay();
+	draw_graph();
 }
 
 void cb_numberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
 {
 	noise_n = gtk_spin_button_get_value(spinbutton);
 	draw_noiseDisplay();
+	draw_graph();
 }
 void cb_choiceOperator_changed(GtkComboBox *combo, gpointer data)
 {
@@ -620,6 +655,7 @@ void cb_choiceOperator_changed(GtkComboBox *combo, gpointer data)
 	if( string )
 		g_free( string );	
 	draw_noiseDisplay();
+	draw_graph();
 }
 void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
 {
@@ -644,5 +680,6 @@ void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
 	if( string )
 		g_free( string );	
 	draw_noiseDisplay();
+	draw_graph();
 }
 
