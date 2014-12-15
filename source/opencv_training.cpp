@@ -38,6 +38,9 @@ int main(int argc, char ** argv)
 	GtkWidget *menubar;
 	MainDialog dialog;
 	GError *error = NULL;
+	GtkListStore    *store;
+	GtkTreeIter      iter;
+	GtkCellRenderer *cell;
 
 	gtk_init(&argc,&argv);
 	// windowの設定
@@ -134,18 +137,115 @@ int main(int argc, char ** argv)
 		dialog.leftButton = gtk_button_new_with_label("LEFT");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.leftButton,FALSE,FALSE,0);
 		// ３色からの輝度グラフを表示するのと３色それぞれのグラフを表示するのを切り替えるボタン
+		// on-off に切り替えるかも
 		dialog.gray3colorButton = gtk_button_new_with_label("GRAY/3COLOR");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.gray3colorButton,FALSE,FALSE,0);
 		// グラフに表示する内容を切り替える（輝度断面＜ー＞FFT）
+		// on-off に切り替えるかも
 		dialog.switchingFFTlumButton = gtk_button_new_with_label("輝度/FFT");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.switchingFFTlumButton,FALSE,FALSE,0);
+		
+		// 下限ラベル
+		dialog.lowThresholdLabel = gtk_label_new("Low");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.lowThresholdLabel, FALSE, FALSE, 0);
+		
+		// ２値化の下限決定SpinButton
+		dialog.lowThresholdiSpin = gtk_spin_button_new_with_range(0,255,1);
+		// 値の桁数を指定
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin), 0);
+		//上限値と下限値を設ける
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin),60);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.lowThresholdiSpin , FALSE, FALSE, 0);
+		
+		// 上限ラベル
+		dialog.highThresholdLabel = gtk_label_new("High");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.highThresholdLabel, FALSE, FALSE, 0);
 
+
+		//２値化の上演決定SpinButton
+		dialog.highThresholdiSpin = gtk_spin_button_new_with_range(0,255,1);
+		// 値の桁数を指定
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.highThresholdiSpin), 0);
+		//上限値と下限値を設ける
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highThresholdiSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highThresholdiSpin),200);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.highThresholdiSpin , FALSE, FALSE, 0);
+	
+		// 試行回数を決定SpinButton
+		// 試行回数ラベル
+		dialog.numberOfOpenLabel = gtk_label_new("試行回数");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
+
+
+		//２値化の上演決定SpinButton
+		dialog.numberOfOpenSpin = gtk_spin_button_new_with_range(0,5,1);
+		// 値の桁数を指定
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.numberOfOpenSpin), 0);
+		//上限値と下限値を設ける
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.numberOfOpenSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.numberOfOpenSpin),1);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.numberOfOpenSpin , FALSE, FALSE, 0);
+
+		// 演算方法の決定Label
+		dialog.numberOfOpenLabel = gtk_label_new("演算方法");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
+
+		// 演算方法を決定ComboBox
+		store = gtk_list_store_new( 1, G_TYPE_STRING );
+		gtk_list_store_append( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "&", -1 );
+		gtk_list_store_prepend( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "|", -1 );
+		gtk_list_store_insert( store, &iter, 1 );
+		gtk_list_store_set( store, &iter, 0, "^", -1 );
+		/* Create combo box with store as data source. */
+		dialog.choiceOperatorCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.choiceOperatorCombobox , FALSE, FALSE, 0);
+		/* Create cell renderer. */
+		cell = gtk_cell_renderer_text_new();
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.choiceOperatorCombobox),&iter);
+		/* Pack it into the combo box. */
+		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, TRUE );
+		/* Connect renderer to data source. */
+		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, "text", 0, NULL );
+
+
+		// ブロック数の決定Label
+		dialog.numberOfOpenLabel = gtk_label_new("ブロック数");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
+
+		// ブロック数を決定ComboBox
+		store = gtk_list_store_new( 1, G_TYPE_STRING );
+		gtk_list_store_append( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "5", -1 );
+		gtk_list_store_append( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "3", -1 );
+		/* Create combo box with store as data source. */
+		dialog.numberOfBlockCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.numberOfBlockCombobox),&iter);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.numberOfBlockCombobox , FALSE, FALSE, 0);
+		/* Create cell renderer. */
+		cell = gtk_cell_renderer_text_new();
+		/* Pack it into the combo box. */
+		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.numberOfBlockCombobox ), cell, TRUE );
+		/* Connect renderer to data source. */
+		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.numberOfBlockCombobox ), cell, "text", 0, NULL );
+
+		// コールバック関数を定義
 		g_signal_connect(G_OBJECT(dialog.upButton), "clicked", G_CALLBACK(cb_upButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.downButton), "clicked", G_CALLBACK(cb_downButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.rightButton), "clicked", G_CALLBACK(cb_rightButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.leftButton), "clicked", G_CALLBACK(cb_leftButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.gray3colorButton), "clicked", G_CALLBACK(cb_gray3colorButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.switchingFFTlumButton), "clicked", G_CALLBACK(cb_switchingFFTlumButton), NULL);
+		// spinの変更時のコールバック
+		g_signal_connect(G_OBJECT(dialog.lowThresholdiSpin), "value-changed", G_CALLBACK(cb_lowThreshold_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.highThresholdiSpin), "value-changed", G_CALLBACK(cb_highThreshold_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.numberOfOpenSpin), "value-changed", G_CALLBACK(cb_numberOfOpen_changed), NULL);
+		// Comboboxの変更時のコールバック
+		 g_signal_connect(G_OBJECT( dialog.choiceOperatorCombobox ), "changed",G_CALLBACK( cb_choiceOperator_changed ), NULL );
+		 g_signal_connect(G_OBJECT( dialog.numberOfBlockCombobox ), "changed",G_CALLBACK( cb_numberOfBlock_changed ), NULL );
 	}
 
 	gtk_widget_show_all(dialog.window);

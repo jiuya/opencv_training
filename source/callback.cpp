@@ -13,6 +13,13 @@ static int yline = 0;
 static int w,h;
 static int graphline = 0;
 
+// noise 変数
+static int noise_lowThreshold = 60;
+static int noise_highThreshold = 200;
+static int noise_n = 1;
+static int noise_operation = '^';
+static int noise_size = 3;
+
 // 膨張収縮画像の生成
 static void
 noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int threshold1,int threshold2,int n,char operation,int size)
@@ -36,8 +43,8 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int t
 	cv::threshold(grayScale, highBinImg, threshold2, 255, cv::THRESH_BINARY);
 	// 画像の膨張収縮
 	cv::Mat element(size,size,CV_8U, cv::Scalar::all(255));
-	cv::morphologyEx(lowBinImg, lowBinImg , cv::MORPH_OPEN, element, cv::Point(-1,-1), n);	
-	cv::morphologyEx(highBinImg,highBinImg, cv::MORPH_OPEN, element, cv::Point(-1,-1), n);	
+	cv::morphologyEx(lowBinImg, lowBinImg , cv::MORPH_OPEN, element, cv::Point(-1,-1), n);
+	cv::morphologyEx(highBinImg,highBinImg, cv::MORPH_OPEN, element, cv::Point(-1,-1), n);
 	// 画像の演算
 	cv::Mat outputMat;
 	if(operation == '+')
@@ -89,7 +96,7 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int t
 }
 // 膨張収縮の右下画像を表示
 static void 
-draw_scaleDisplay(void)
+draw_noiseDisplay()
 {	
 	cairo_t *scaleImg_cr;
 	cairo_t *scaleImg_back;
@@ -105,7 +112,8 @@ draw_scaleDisplay(void)
 		cairo_destroy(scaleImg_back);
 		// 画像を描画
 		scaleImg_cr = gdk_cairo_create (scaleImgdrawable);
-		noiseExtractionImage(pixbufdata,resultImg,60,190,1,'&',3);
+		// モルフォロジーを用い微小なゴミを抽出
+		noiseExtractionImage(pixbufdata,resultImg,noise_lowThreshold,noise_highThreshold,noise_n,noise_operation,noise_size);
 		gdk_cairo_set_source_pixbuf(scaleImg_cr,resultImg,-yline,-xline);
 		cairo_rectangle (scaleImg_cr, 0, 0,255, 255);
 		cairo_fill (scaleImg_cr);
@@ -128,7 +136,7 @@ draw_display(void)
 	// GdkWindow からコンテキストを生成
 	cr = gdk_cairo_create (drowable);
 	// 右下の画像を表示
-	draw_scaleDisplay();	
+	draw_noiseDisplay();	
 	// ソースをpixbufから読み込む
 	gdk_cairo_set_source_pixbuf(cr,pixbufdata,0,0);
 	// 画像サイズのパスを生成
@@ -571,3 +579,70 @@ cb_button_press_event(GtkWidget *widget, GdkEventButton *event)
 	}
 	return TRUE;
 }
+
+void cb_lowThreshold_changed(GtkSpinButton *spinbutton, gpointer data)
+{
+	noise_lowThreshold = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+}
+
+void cb_highThreshold_changed(GtkSpinButton *spinbutton, gpointer data)
+{
+	noise_highThreshold = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+}
+
+void cb_numberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
+{
+	noise_n = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+}
+void cb_choiceOperator_changed(GtkComboBox *combo, gpointer data)
+{
+	GtkTreeIter   iter;
+	gchar        *string = NULL;
+	GtkTreeModel *model;
+	/* Obtain currently selected item from combo box.
+	 * If nothing is selected, do nothing. */
+	if( gtk_combo_box_get_active_iter( combo, &iter ) )
+	{
+		/* Obtain data model from combo box. */
+		model = gtk_combo_box_get_model( combo );
+		/* Obtain string from model. */
+		gtk_tree_model_get( model, &iter, 0, &string, -1 );
+	}
+	/* Print string to the console - if string is NULL, print NULL. */
+	if(string != NULL)
+	{
+		noise_operation = *string;
+	}
+	/* Free string (if not NULL). */
+	if( string )
+		g_free( string );	
+	draw_noiseDisplay();
+}
+void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
+{
+	GtkTreeIter   iter;
+	gchar        *string = NULL;
+	GtkTreeModel *model;
+	/* Obtain currently selected item from combo box.
+	 * If nothing is selected, do nothing. */
+	if( gtk_combo_box_get_active_iter( combo, &iter ) )
+	{
+		/* Obtain data model from combo box. */
+		model = gtk_combo_box_get_model( combo );
+		/* Obtain string from model. */
+		gtk_tree_model_get( model, &iter, 0, &string, -1 );
+	}
+	/* Print string to the console - if string is NULL, print NULL. */
+	if(string != NULL)
+	{
+		noise_size = atoi(string);
+	}
+	/* Free string (if not NULL). */
+	if( string )
+		g_free( string );	
+	draw_noiseDisplay();
+}
+
