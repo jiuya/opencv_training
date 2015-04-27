@@ -150,13 +150,13 @@ int main(int argc, char ** argv)
 		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.lowThresholdLabel, FALSE, FALSE, 0);
 		
 		// ２値化の下限決定SpinButton
-		dialog.lowThresholdiSpin = gtk_spin_button_new_with_range(0,255,1);
+		dialog.lowThresholdSpin = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
-		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin), 0);
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), 0);
 		//上限値と下限値を設ける
-		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin), TRUE);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdiSpin),60);
-		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.lowThresholdiSpin , FALSE, FALSE, 0);
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdSpin),60);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.lowThresholdSpin , FALSE, FALSE, 0);
 		
 		// 上限ラベル
 		dialog.highThresholdLabel = gtk_label_new("High");
@@ -164,13 +164,13 @@ int main(int argc, char ** argv)
 
 
 		//２値化の上演決定SpinButton
-		dialog.highThresholdiSpin = gtk_spin_button_new_with_range(0,255,1);
+		dialog.highThresholdSpin = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
-		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.highThresholdiSpin), 0);
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.highThresholdSpin), 0);
 		//上限値と下限値を設ける
-		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highThresholdiSpin), TRUE);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highThresholdiSpin),200);
-		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.highThresholdiSpin , FALSE, FALSE, 0);
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highThresholdSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highThresholdSpin),200);
+		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.highThresholdSpin , FALSE, FALSE, 0);
 	
 		// 試行回数を決定SpinButton
 		// 試行回数ラベル
@@ -240,8 +240,8 @@ int main(int argc, char ** argv)
 		g_signal_connect(G_OBJECT(dialog.gray3colorButton), "clicked", G_CALLBACK(cb_gray3colorButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.switchingFFTlumButton), "clicked", G_CALLBACK(cb_switchingFFTlumButton), NULL);
 		// spinの変更時のコールバック
-		g_signal_connect(G_OBJECT(dialog.lowThresholdiSpin), "value-changed", G_CALLBACK(cb_lowThreshold_changed), NULL);
-		g_signal_connect(G_OBJECT(dialog.highThresholdiSpin), "value-changed", G_CALLBACK(cb_highThreshold_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.lowThresholdSpin), "value-changed", G_CALLBACK(cb_lowThreshold_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.highThresholdSpin), "value-changed", G_CALLBACK(cb_highThreshold_changed), NULL);
 		g_signal_connect(G_OBJECT(dialog.numberOfOpenSpin), "value-changed", G_CALLBACK(cb_numberOfOpen_changed), NULL);
 		// Comboboxの変更時のコールバック
 		 g_signal_connect(G_OBJECT( dialog.choiceOperatorCombobox ), "changed",G_CALLBACK( cb_choiceOperator_changed ), NULL );

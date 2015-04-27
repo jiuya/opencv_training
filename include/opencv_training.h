@@ -37,8 +37,8 @@ typedef struct main_dialog_type {
 	GtkWidget *graphY;
 	GtkWidget *scaleImg;
 	// Spinbutton
-	GtkWidget *lowThresholdiSpin;
-	GtkWidget *highThresholdiSpin;
+	GtkWidget *lowThresholdSpin;
+	GtkWidget *highThresholdSpin;
 	GtkWidget *numberOfOpenSpin;
 	// Label
 	GtkWidget *highThresholdLabel;
