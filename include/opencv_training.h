@@ -30,6 +30,8 @@ typedef struct main_dialog_type {
 	GtkWidget *imgVbox;
 	GtkWidget *hbox;
 	GtkWidget *imgHbox;
+	GtkWidget *lowImgBox;
+	GtkWidget *highImgBox;
 	// Drowingarea
 	GtkWidget *scaleImgVbox;
 	GtkWidget *drowingarea;
@@ -39,7 +41,8 @@ typedef struct main_dialog_type {
 	// Spinbutton
 	GtkWidget *lowThresholdSpin;
 	GtkWidget *highThresholdSpin;
-	GtkWidget *numberOfOpenSpin;
+	GtkWidget *lowNumberOfOpenSpin;
+	GtkWidget *highNumberOfOpenSpin;
 	// Label
 	GtkWidget *highThresholdLabel;
 	GtkWidget *lowThresholdLabel;
@@ -48,7 +51,13 @@ typedef struct main_dialog_type {
 	GtkWidget *numberOfBlockLabel;
 	// Combobox
 	GtkWidget *choiceOperatorCombobox;
-	GtkWidget *numberOfBlockCombobox;
+	GtkWidget *lowNumberOfBlockCombobox;
+	GtkWidget *highNumberOfBlockCombobox;
+	// Frame
+	GtkWidget *lowImgFrame;
+	GtkWidget *highImgFrame;
+	// Grid
+	GtkWidget *buttonGrid;
 } MainDialog;
 // expose event
 gboolean cb_expose(	GtkWidget *widget,
@@ -94,10 +103,14 @@ void cb_lowThreshold_changed(GtkSpinButton *spinbutton, gpointer data);
 
 void cb_highThreshold_changed(GtkSpinButton *spinbutton, gpointer data);
 
-void cb_numberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data);
+void cb_lowNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_highNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data);
 
 void cb_choiceOperator_changed(GtkComboBox *spinbutton, gpointer data);
 
-void cb_numberOfBlock_changed(GtkComboBox *spinbutton, gpointer data);
+void cb_lowNumberOfBlock_changed(GtkComboBox *spinbutton, gpointer data);
+
+void cb_highNumberOfBlock_changed(GtkComboBox *spinbutton, gpointer data);
 
 #endif

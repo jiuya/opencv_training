@@ -16,13 +16,15 @@ static int graphline = 0;
 // noise 変数
 static int noise_lowThreshold = 60;
 static int noise_highThreshold = 200;
-static int noise_n = 1;
+static int noise_highN = 1;
+static int noise_lowN = 1;
 static int noise_operation = '^';
-static int noise_size = 3;
+static int noise_lowSize = 3;
+static int noise_highSize = 3;
 
 // 膨張収縮画像の生成
 static void
-noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int threshold1,int threshold2,int n,char operation,int size)
+noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int threshold1,int threshold2,int n1,int n2,char operation,int size1,int size2)
 {
 	// pixbuf からcv::Mat に変換
 	cv::Mat colorScale(
@@ -42,9 +44,10 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,int t
 	cv::Mat highBinImg;
 	cv::threshold(grayScale, highBinImg, threshold2, 255, cv::THRESH_BINARY);
 	// 画像の膨張収縮
-	cv::Mat element(size,size,CV_8U, cv::Scalar::all(255));
-	cv::morphologyEx(lowBinImg, lowBinImg , cv::MORPH_OPEN, element, cv::Point(-1,-1), n);
-	cv::morphologyEx(highBinImg,highBinImg, cv::MORPH_OPEN, element, cv::Point(-1,-1), n);
+	cv::Mat element1(size1,size1,CV_8U, cv::Scalar::all(255));
+	cv::Mat element2(size2,size2,CV_8U, cv::Scalar::all(255));
+	cv::morphologyEx(lowBinImg, lowBinImg , cv::MORPH_OPEN, element1, cv::Point(-1,-1), n1);
+	cv::morphologyEx(highBinImg,highBinImg, cv::MORPH_OPEN, element2, cv::Point(-1,-1), n2);
 	// 画像の演算
 	cv::Mat outputMat;
 	if(operation == '+')
@@ -113,7 +116,13 @@ draw_noiseDisplay()
 		// 画像を描画
 		scaleImg_cr = gdk_cairo_create (scaleImgdrawable);
 		// モルフォロジーを用い微小なゴミを抽出
-		noiseExtractionImage(pixbufdata,resultImg,noise_lowThreshold,noise_highThreshold,noise_n,noise_operation,noise_size);
+		noiseExtractionImage(
+				pixbufdata,
+				resultImg,
+				noise_lowThreshold,noise_highThreshold,
+				noise_lowN,noise_highN,
+				noise_operation,
+				noise_lowSize,noise_highSize);
 		gdk_cairo_set_source_pixbuf(scaleImg_cr,resultImg,-yline,-xline);
 		cairo_rectangle (scaleImg_cr, 0, 0,255, 255);
 		cairo_fill (scaleImg_cr);
@@ -626,9 +635,15 @@ void cb_highThreshold_changed(GtkSpinButton *spinbutton, gpointer data)
 	draw_graph();
 }
 
-void cb_numberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
+void cb_lowNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
 {
-	noise_n = gtk_spin_button_get_value(spinbutton);
+	noise_lowN = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+	draw_graph();
+}
+void cb_highNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
+{
+	noise_highN = gtk_spin_button_get_value(spinbutton);
 	draw_noiseDisplay();
 	draw_graph();
 }
@@ -657,7 +672,7 @@ void cb_choiceOperator_changed(GtkComboBox *combo, gpointer data)
 	draw_noiseDisplay();
 	draw_graph();
 }
-void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
+void cb_lowNumberOfBlock_changed(GtkComboBox *combo, gpointer data)
 {
 	GtkTreeIter   iter;
 	gchar        *string = NULL;
@@ -674,7 +689,7 @@ void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
 	/* Print string to the console - if string is NULL, print NULL. */
 	if(string != NULL)
 	{
-		noise_size = atoi(string);
+		noise_lowSize = atoi(string);
 	}
 	/* Free string (if not NULL). */
 	if( string )
@@ -682,4 +697,28 @@ void cb_numberOfBlock_changed(GtkComboBox *combo, gpointer data)
 	draw_noiseDisplay();
 	draw_graph();
 }
-
+void cb_highNumberOfBlock_changed(GtkComboBox *combo, gpointer data)
+{
+	GtkTreeIter   iter;
+	gchar        *string = NULL;
+	GtkTreeModel *model;
+	/* Obtain currently selected item from combo box.
+	 * If nothing is selected, do nothing. */
+	if( gtk_combo_box_get_active_iter( combo, &iter ) )
+	{
+		/* Obtain data model from combo box. */
+		model = gtk_combo_box_get_model( combo );
+		/* Obtain string from model. */
+		gtk_tree_model_get( model, &iter, 0, &string, -1 );
+	}
+	/* Print string to the console - if string is NULL, print NULL. */
+	if(string != NULL)
+	{
+		noise_highSize = atoi(string);
+	}
+	/* Free string (if not NULL). */
+	if( string )
+		g_free( string );	
+	draw_noiseDisplay();
+	draw_graph();
+}
