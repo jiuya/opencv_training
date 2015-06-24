@@ -2,6 +2,7 @@
 #define OPENCV_TRAINING_H
 //#include <iostream>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 
 // OpenCV
@@ -71,6 +72,7 @@ typedef struct main_dialog_type {
 	// Grid
 	GtkWidget *buttonGrid;
 } MainDialog;
+
 // expose event
 gboolean cb_expose(	GtkWidget *widget,
 					GdkEventExpose *event,
@@ -125,4 +127,15 @@ void cb_lowNumberOfBlock_changed(GtkComboBox *spinbutton, gpointer data);
 
 void cb_highNumberOfBlock_changed(GtkComboBox *spinbutton, gpointer data);
 
+void cb_lowSwitchingMorphology_changed(GtkComboBox *spinbutton, gpointer data);
+
+void cb_highSwitchingMorphology_changed(GtkComboBox *spinbutton, gpointer data);
+
+void cb_lowNumberOfDilate_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_highNumberOfDilate_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_lowNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_highNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data);
 #endif

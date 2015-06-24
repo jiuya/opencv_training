@@ -399,10 +399,16 @@ int main(int argc, char ** argv)
 		g_signal_connect(G_OBJECT(dialog.highThresholdSpin), "value-changed", G_CALLBACK(cb_highThreshold_changed), NULL);
 		g_signal_connect(G_OBJECT(dialog.lowNumberOfOpenSpin), "value-changed", G_CALLBACK(cb_lowNumberOfOpen_changed), NULL);
 		g_signal_connect(G_OBJECT(dialog.highNumberOfOpenSpin), "value-changed", G_CALLBACK(cb_highNumberOfOpen_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.lowNumberOfDilate), "value-changed", G_CALLBACK(cb_lowNumberOfDilate_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.highNumberOfDilate), "value-changed", G_CALLBACK(cb_highNumberOfDilate_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.lowNumberOfErode), "value-changed", G_CALLBACK(cb_lowNumberOfErode_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.highNumberOfErode), "value-changed", G_CALLBACK(cb_highNumberOfErode_changed), NULL);
 		// Comboboxの変更時のコールバック
 		g_signal_connect(G_OBJECT( dialog.choiceOperatorCombobox ), "changed",G_CALLBACK( cb_choiceOperator_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.lowNumberOfBlockCombobox ), "changed",G_CALLBACK( cb_lowNumberOfBlock_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.highNumberOfBlockCombobox ), "changed",G_CALLBACK( cb_highNumberOfBlock_changed ), NULL );
+		g_signal_connect(G_OBJECT( dialog.lowSwitchingMorphologyCombobox ),  "changed",G_CALLBACK( cb_lowSwitchingMorphology_changed ), NULL );
+		g_signal_connect(G_OBJECT( dialog.highSwitchingMorphologyCombobox ), "changed",G_CALLBACK( cb_highSwitchingMorphology_changed ), NULL );
 	}
 
 	gtk_widget_show_all(dialog.window);
