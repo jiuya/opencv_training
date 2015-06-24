@@ -43,16 +43,28 @@ typedef struct main_dialog_type {
 	GtkWidget *highThresholdSpin;
 	GtkWidget *lowNumberOfOpenSpin;
 	GtkWidget *highNumberOfOpenSpin;
+	GtkWidget *lowNumberOfDilate;
+	GtkWidget *highNumberOfDilate;
+	GtkWidget *lowNumberOfErode;
+	GtkWidget *highNumberOfErode;
 	// Label
 	GtkWidget *highThresholdLabel;
 	GtkWidget *lowThresholdLabel;
 	GtkWidget *numberOfOpenLabel;
 	GtkWidget *choiceOperatorLabel;
 	GtkWidget *numberOfBlockLabel;
+	GtkWidget *lowNumberOfDilateLabel;
+	GtkWidget *highNumberOfDilateLabel;
+	GtkWidget *lowNumberOfErodeLabel;
+	GtkWidget *highNumberOfErodeLabel;
+	//GtkWidget *switchingMorphologyLabel;
+
 	// Combobox
 	GtkWidget *choiceOperatorCombobox;
 	GtkWidget *lowNumberOfBlockCombobox;
 	GtkWidget *highNumberOfBlockCombobox;
+	GtkWidget *lowSwitchingMorphologyCombobox;
+	GtkWidget *highSwitchingMorphologyCombobox;
 	// Frame
 	GtkWidget *lowImgFrame;
 	GtkWidget *highImgFrame;
