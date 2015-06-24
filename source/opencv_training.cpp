@@ -191,7 +191,7 @@ int main(int argc, char ** argv)
 	
 		// 試行回数を決定SpinButton
 		// 試行回数ラベル
-		dialog.numberOfOpenLabel = gtk_label_new("OPEN 試行回数");
+		dialog.numberOfOpenLabel = gtk_label_new("Openig 試行回数");
 		//gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.numberOfOpenLabel , FALSE, FALSE, 0);
 
@@ -263,7 +263,7 @@ int main(int argc, char ** argv)
 	
 		// 試行回数を決定SpinButton
 		// 試行回数ラベル
-		dialog.numberOfOpenLabel = gtk_label_new("OPEN 試行回数");
+		dialog.numberOfOpenLabel = gtk_label_new("Opening 試行回数");
 		//gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox),dialog.numberOfOpenLabel , FALSE, FALSE, 0);
 

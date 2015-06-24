@@ -31,6 +31,9 @@
 # Bitmap
 *.bmp
 
+# swap file
+*.swp
+
 # etc
 *.DS_Store
 *.db
