@@ -27,6 +27,9 @@ static int noise_lowDilate = 1;
 static int noise_highDilate = 1;
 static int noise_lowErode = 1;
 static int noise_highErode = 1;
+static int noise_outOpen = cv::MORPH_OPEN;
+static int noise_outOpenN = 1;
+
 
 // 膨張収縮画像の生成
 static void
@@ -37,7 +40,8 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,
 		int size1,int size2,
 		int mol1,int mol2,
 		int dilate1,int dilate2,
-		int erode1,int erode2)
+		int erode1,int erode2,
+		int outMol,int outN)
 {
 	// pixbuf からcv::Mat に変換
 	cv::Mat colorScale(
@@ -121,7 +125,9 @@ noiseExtractionImage(GdkPixbuf* const inputPixbuf,GdkPixbuf*& outputPixbuf,
 	{
 		outputMat = lowBinImg;
 	}
-	cv::morphologyEx(outputMat, outputMat , cv::MORPH_OPEN, element1, cv::Point(-1,-1), 2);
+	// 出力画像のノイズ除去
+	cv::Mat element(3,3,CV_8U, cv::Scalar::all(255));
+	cv::morphologyEx(outputMat, outputMat ,outMol ,element ,cv::Point(-1,-1), outN);
 
 	// cv::Mat から pixbufに変換
 	cv::cvtColor(outputMat,outputMat,CV_GRAY2RGB,3);
@@ -166,7 +172,8 @@ draw_noiseDisplay()
 				noise_lowSize,noise_highSize,
 				noise_lowMorphorogy,noise_highMorphorogy,
 				noise_lowDilate,noise_highDilate,
-				noise_lowErode ,noise_highErode);
+				noise_lowErode ,noise_highErode,
+				noise_outOpen,noise_outOpenN);
 		gdk_cairo_set_source_pixbuf(scaleImg_cr,resultImg,-yline,-xline);
 		cairo_rectangle (scaleImg_cr, 0, 0,255, 255);
 		cairo_fill (scaleImg_cr);
@@ -845,6 +852,40 @@ void cb_lowNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data)
 void cb_highNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data)
 {
 	noise_highErode = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+	draw_graph();
+}
+void cb_outNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data)
+{
+	noise_outOpenN = gtk_spin_button_get_value(spinbutton);
+	draw_noiseDisplay();
+	draw_graph();
+}
+void cb_outSwitchingMorphology_changed(GtkComboBox *combo, gpointer data)
+{
+	GtkTreeIter  iter;
+	gchar        *string = NULL;
+	const gchar  opening[] = "Opening";
+	const gchar  closing[] = "Closing";
+	GtkTreeModel *model;
+	if( gtk_combo_box_get_active_iter( combo, &iter ) )
+	{
+		/* Obtain data model from combo box. */
+		model = gtk_combo_box_get_model( combo );
+		/* Obtain string from model. */
+		gtk_tree_model_get( model, &iter, 0, &string, -1 );
+	}
+	if( !strcmp(string,opening) )
+	{
+		noise_outOpen = cv::MORPH_OPEN;
+	}
+	else if( !strcmp(string,closing) )
+	{
+		noise_outOpen = cv::MORPH_CLOSE;
+	}
+
+	if( string )
+		g_free( string );	
 	draw_noiseDisplay();
 	draw_graph();
 }

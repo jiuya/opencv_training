@@ -33,6 +33,7 @@ typedef struct main_dialog_type {
 	GtkWidget *imgHbox;
 	GtkWidget *lowImgBox;
 	GtkWidget *highImgBox;
+	GtkWidget *outImgBox;
 	// Drowingarea
 	GtkWidget *scaleImgVbox;
 	GtkWidget *drowingarea;
@@ -48,6 +49,7 @@ typedef struct main_dialog_type {
 	GtkWidget *highNumberOfDilate;
 	GtkWidget *lowNumberOfErode;
 	GtkWidget *highNumberOfErode;
+	GtkWidget *outNumberOfOpenSpin;
 	// Label
 	GtkWidget *highThresholdLabel;
 	GtkWidget *lowThresholdLabel;
@@ -66,9 +68,11 @@ typedef struct main_dialog_type {
 	GtkWidget *highNumberOfBlockCombobox;
 	GtkWidget *lowSwitchingMorphologyCombobox;
 	GtkWidget *highSwitchingMorphologyCombobox;
+	GtkWidget *outSwitchingMorphologyCombobox;
 	// Frame
 	GtkWidget *lowImgFrame;
 	GtkWidget *highImgFrame;
+	GtkWidget *outImgFrame;
 	// Grid
 	GtkWidget *buttonGrid;
 } MainDialog;
@@ -138,4 +142,8 @@ void cb_highNumberOfDilate_changed(GtkSpinButton *spinbutton, gpointer data);
 void cb_lowNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data);
 
 void cb_highNumberOfErode_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_outNumberOfOpen_changed(GtkSpinButton *spinbutton, gpointer data);
+
+void cb_outSwitchingMorphology_changed(GtkComboBox *spinbutton, gpointer data);
 #endif

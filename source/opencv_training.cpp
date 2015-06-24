@@ -160,11 +160,6 @@ int main(int argc, char ** argv)
 		dialog.lowImgBox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 		gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowImgBox);
 		
-
-		// Opening Closing 切り替えCombobox
-		//dialog.switchingMorphologyLabel = gtk_label_new("Openinig or Closing");
-		//gtk_box_pack_start(GTK_BOX(dialog.lowImgBox), dialog.switchingMorphologyLabel, FALSE, FALSE, 0);
-
 		// Opening Closing 切り替えCombobox
 		store = gtk_list_store_new( 1, G_TYPE_STRING );
 		gtk_list_store_append( store, &iter );
@@ -387,6 +382,48 @@ int main(int argc, char ** argv)
 		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, "text", 0, NULL );
 
 
+		/*** Out画像用 ***/
+		dialog.outImgFrame = gtk_frame_new("Out");
+		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.outImgFrame, FALSE, FALSE, 0);
+		dialog.outImgBox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+		gtk_container_add(GTK_CONTAINER(dialog.outImgFrame), dialog.outImgBox);
+
+
+		// Out画像用 Opening Closing 切り替えCombobox
+		store = gtk_list_store_new( 1, G_TYPE_STRING );
+		gtk_list_store_append( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "Closing", -1 );
+		gtk_list_store_append( store, &iter );
+		gtk_list_store_set( store, &iter, 0, "Opening", -1 );
+		/* Create combo box with store as data source. */
+		dialog.outSwitchingMorphologyCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
+		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.outSwitchingMorphologyCombobox),&iter);
+		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outSwitchingMorphologyCombobox , FALSE, FALSE, 0);
+		/* Create cell renderer. */
+		cell = gtk_cell_renderer_text_new();
+		/* Pack it into the combo box. */
+		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, TRUE );
+		/* Connect renderer to data source. */
+		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, "text", 0, NULL );
+		
+		// 試行回数を決定SpinButton
+		// 試行回数ラベル
+		dialog.numberOfOpenLabel = gtk_label_new("試行回数");
+		//gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
+		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.numberOfOpenLabel , FALSE, FALSE, 0);
+
+		//２値化の上限決定SpinButton
+		dialog.outNumberOfOpenSpin = gtk_spin_button_new_with_range(0,10,1);
+		// 値の桁数を指定
+		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), 0);
+		//上限値と下限値を設ける
+		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), TRUE);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin),1);
+		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outNumberOfOpenSpin , FALSE, FALSE, 0);
+
+
+
+
 		// コールバック関数を定義
 		g_signal_connect(G_OBJECT(dialog.upButton), "clicked", G_CALLBACK(cb_upButton), NULL);
 		g_signal_connect(G_OBJECT(dialog.downButton), "clicked", G_CALLBACK(cb_downButton), NULL);
@@ -403,12 +440,14 @@ int main(int argc, char ** argv)
 		g_signal_connect(G_OBJECT(dialog.highNumberOfDilate), "value-changed", G_CALLBACK(cb_highNumberOfDilate_changed), NULL);
 		g_signal_connect(G_OBJECT(dialog.lowNumberOfErode), "value-changed", G_CALLBACK(cb_lowNumberOfErode_changed), NULL);
 		g_signal_connect(G_OBJECT(dialog.highNumberOfErode), "value-changed", G_CALLBACK(cb_highNumberOfErode_changed), NULL);
+		g_signal_connect(G_OBJECT(dialog.outNumberOfOpenSpin), "value-changed", G_CALLBACK(cb_outNumberOfOpen_changed), NULL);
 		// Comboboxの変更時のコールバック
 		g_signal_connect(G_OBJECT( dialog.choiceOperatorCombobox ), "changed",G_CALLBACK( cb_choiceOperator_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.lowNumberOfBlockCombobox ), "changed",G_CALLBACK( cb_lowNumberOfBlock_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.highNumberOfBlockCombobox ), "changed",G_CALLBACK( cb_highNumberOfBlock_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.lowSwitchingMorphologyCombobox ),  "changed",G_CALLBACK( cb_lowSwitchingMorphology_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.highSwitchingMorphologyCombobox ), "changed",G_CALLBACK( cb_highSwitchingMorphology_changed ), NULL );
+		g_signal_connect(G_OBJECT( dialog.outSwitchingMorphologyCombobox ), "changed",G_CALLBACK( cb_outSwitchingMorphology_changed ), NULL );
 	}
 
 	gtk_widget_show_all(dialog.window);
