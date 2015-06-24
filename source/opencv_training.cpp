@@ -1,5 +1,5 @@
-//#include"opencv_training.h"
 #include"../include/opencv_training.h"
+
 static const gchar *menu_info =
   "<ui>"
   "  <menubar name='Menubar'>"
@@ -31,6 +31,7 @@ static GtkUIManager* create_menu(GtkWidget *parent)
   gtk_window_add_accel_group(GTK_WINDOW(parent), gtk_ui_manager_get_accel_group(ui));
   return ui;
 }
+
 // Main roop
 int main(int argc, char ** argv)
 {
@@ -173,22 +174,7 @@ int main(int argc, char ** argv)
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdSpin),60);
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowThresholdSpin , FALSE, FALSE, 0);
-		//gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowThresholdSpin);
-		
-		// 上限ラベル
-		//dialog.highThresholdLabel = gtk_label_new("High");
-		//gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.highThresholdLabel, FALSE, FALSE, 0);
 
-
-		//２値化の上演決定SpinButton
-		//dialog.highThresholdSpin = gtk_spin_button_new_with_range(0,255,1);
-		// 値の桁数を指定
-		//gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.highThresholdSpin), 0);
-		//上限値と下限値を設ける
-		//gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highThresholdSpin), TRUE);
-		//gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highThresholdSpin),200);
-		//gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.highThresholdSpin , FALSE, FALSE, 0);
-	
 		// 試行回数を決定SpinButton
 		// 試行回数ラベル
 		dialog.numberOfOpenLabel = gtk_label_new("Openig 試行回数");
@@ -232,21 +218,7 @@ int main(int argc, char ** argv)
 		gtk_container_add(GTK_CONTAINER(dialog.highImgFrame), dialog.highImgBox);
 		
 
-		// 下限ラベル
-		//dialog.lowThresholdLabel = gtk_label_new("閾値");
-		//gtk_box_pack_start(GTK_BOX(dialog.lowImgBox), dialog.lowThresholdLabel, FALSE, FALSE, 0);
-		//gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowThresholdLabel);
-		
-		// ２値化の下限決定SpinButton
-		//dialog.lowThresholdSpin = gtk_spin_button_new_with_range(0,255,1);
-		// 値の桁数を指定
-		//gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), 0);
-		//上限値と下限値を設ける
-		//gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), TRUE);
-		//gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdSpin),60);
-		//gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowThresholdSpin , FALSE, FALSE, 0);
-		//gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowThresholdSpin);
-		
+	
 		// 上限ラベル
 		dialog.highThresholdLabel = gtk_label_new("閾値");
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox), dialog.highThresholdLabel, FALSE, FALSE, 0);
