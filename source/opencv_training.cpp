@@ -51,7 +51,7 @@ int main(int argc, char ** argv)
 	gtk_window_set_position(GTK_WINDOW(dialog.window),GTK_WIN_POS_CENTER);
 	gtk_container_set_border_width(GTK_CONTAINER(dialog.window),10);
 	g_signal_connect(G_OBJECT(dialog.window), "destroy", G_CALLBACK(gtk_main_quit), NULL);
-	
+
 	dialog.menuVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 	gtk_container_add(GTK_CONTAINER(dialog.window),dialog.menuVbox);
 	// mnue ber
@@ -114,7 +114,7 @@ int main(int argc, char ** argv)
 		// 拡大・縮小用 vbox
 		dialog.scaleImgVbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 		gtk_box_pack_start(GTK_BOX(dialog.imgHbox),dialog.scaleImgVbox,FALSE,FALSE,5);
-		
+
 		dialog.scaleImg = gtk_drawing_area_new();
 		gtk_widget_set_size_request(dialog.scaleImg,256,256);
 		gtk_box_pack_start(GTK_BOX(dialog.scaleImgVbox),dialog.scaleImg,TRUE,TRUE,0);
@@ -129,7 +129,7 @@ int main(int argc, char ** argv)
 	gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,FALSE,TRUE,0);
 	// buttonを配置
 	{
-		// gridを作成
+    // gridを作成
 		dialog.buttonGrid = gtk_grid_new();
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.buttonGrid,FALSE,FALSE,0);
 
@@ -153,13 +153,13 @@ int main(int argc, char ** argv)
 		// on-off に切り替えるかも
 		dialog.switchingFFTlumButton = gtk_button_new_with_label("輝度/FFT");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.switchingFFTlumButton,FALSE,FALSE,0);
-		
+
 		/*** Low 操作用***/
 		dialog.lowImgFrame = gtk_frame_new("Low");
 		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.lowImgFrame, FALSE, FALSE, 0);
 		dialog.lowImgBox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
 		gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowImgBox);
-		
+
 		// Opening Closing 切り替えCombobox
 		store = gtk_list_store_new( 1, G_TYPE_STRING );
 		gtk_list_store_append( store, &iter );
@@ -183,7 +183,7 @@ int main(int argc, char ** argv)
 		dialog.lowThresholdLabel = gtk_label_new("閾値");
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox), dialog.lowThresholdLabel, FALSE, FALSE, 0);
 		//gtk_container_add(GTK_CONTAINER(dialog.lowImgFrame), dialog.lowThresholdLabel);
-		
+
 		// ２値化の下限決定SpinButton
 		dialog.lowThresholdSpin = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
@@ -192,11 +192,11 @@ int main(int argc, char ** argv)
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowThresholdSpin), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowThresholdSpin),60);
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowThresholdSpin , FALSE, FALSE, 0);
-		
+
 		// 膨張回数決定label
 		dialog.lowNumberOfDilateLabel = gtk_label_new("膨張回数");
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox), dialog.lowNumberOfDilateLabel, FALSE, FALSE, 0);
-		
+
 		//膨張回数決定SpinButton
 		dialog.lowNumberOfDilate = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
@@ -205,11 +205,11 @@ int main(int argc, char ** argv)
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowNumberOfDilate), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowNumberOfDilate),1);
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowNumberOfDilate , FALSE, FALSE, 0);
-		
+
 		// 収縮回数決定label
 		dialog.lowNumberOfErodeLabel = gtk_label_new("収縮回数");
 		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox), dialog.lowNumberOfErodeLabel, FALSE, FALSE, 0);
-		
+
 		// 収縮回数決定SpinButton
 		dialog.lowNumberOfErode = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
@@ -217,7 +217,7 @@ int main(int argc, char ** argv)
 		//上限値と下限値を設ける
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.lowNumberOfErode), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.lowNumberOfErode),1);
-		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowNumberOfErode , FALSE, FALSE, 0);	
+		gtk_box_pack_start(GTK_BOX(dialog.lowImgBox),dialog.lowNumberOfErode , FALSE, FALSE, 0);
 
 		// 試行回数を決定SpinButton
 		// 試行回数ラベル
@@ -277,7 +277,7 @@ int main(int argc, char ** argv)
 		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.highSwitchingMorphologyCombobox ), cell, TRUE );
 		/* Connect renderer to data source. */
 		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.highSwitchingMorphologyCombobox ), cell, "text", 0, NULL );
-	
+
 
 		// 上限ラベル
 		dialog.highThresholdLabel = gtk_label_new("閾値");
@@ -292,11 +292,11 @@ int main(int argc, char ** argv)
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highThresholdSpin), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highThresholdSpin),200);
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox),dialog.highThresholdSpin , FALSE, FALSE, 0);
-	
+
 		// 膨張回数決定label
 		dialog.highNumberOfDilateLabel = gtk_label_new("膨張回数");
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox), dialog.highNumberOfDilateLabel, FALSE, FALSE, 0);
-		
+
 		//膨張回数決定SpinButton
 		dialog.highNumberOfDilate = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
@@ -305,11 +305,11 @@ int main(int argc, char ** argv)
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highNumberOfDilate), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highNumberOfDilate),1);
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox),dialog.highNumberOfDilate , FALSE, FALSE, 0);
-		
+
 		// 収縮回数決定label
 		dialog.highNumberOfErodeLabel = gtk_label_new("収縮回数");
 		gtk_box_pack_start(GTK_BOX(dialog.highImgBox), dialog.highNumberOfErodeLabel, FALSE, FALSE, 0);
-		
+
 		// 収縮回数決定SpinButton
 		dialog.highNumberOfErode = gtk_spin_button_new_with_range(0,255,1);
 		// 値の桁数を指定
@@ -317,7 +317,7 @@ int main(int argc, char ** argv)
 		//上限値と下限値を設ける
 		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.highNumberOfErode), TRUE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.highNumberOfErode),1);
-		gtk_box_pack_start(GTK_BOX(dialog.highImgBox),dialog.highNumberOfErode , FALSE, FALSE, 0);	
+		gtk_box_pack_start(GTK_BOX(dialog.highImgBox),dialog.highNumberOfErode , FALSE, FALSE, 0);
 
 
 
@@ -358,70 +358,74 @@ int main(int argc, char ** argv)
 		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.highNumberOfBlockCombobox ), cell, "text", 0, NULL );
 
 
-		// 演算方法の決定Label
-		dialog.numberOfOpenLabel = gtk_label_new("演算方法");
-		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
 
-		// 演算方法を決定ComboBox
-		store = gtk_list_store_new( 1, G_TYPE_STRING );
-		gtk_list_store_append( store, &iter );
-		gtk_list_store_set( store, &iter, 0, "&", -1 );
-		gtk_list_store_prepend( store, &iter );
-		gtk_list_store_set( store, &iter, 0, "|", -1 );
-		gtk_list_store_insert( store, &iter, 1 );
-		gtk_list_store_set( store, &iter, 0, "^", -1 );
-		/* Create combo box with store as data source. */
-		dialog.choiceOperatorCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
-		gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.choiceOperatorCombobox , FALSE, FALSE, 0);
-		/* Create cell renderer. */
-		cell = gtk_cell_renderer_text_new();
-		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.choiceOperatorCombobox),&iter);
-		/* Pack it into the combo box. */
-		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, TRUE );
-		/* Connect renderer to data source. */
-		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, "text", 0, NULL );
+  }
 
+    // 操作用box 2
+    dialog.vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+    gtk_box_pack_start(GTK_BOX(dialog.hbox),dialog.vbox,FALSE,TRUE,0);
+    // 演算方法の決定Label
+    dialog.numberOfOpenLabel = gtk_label_new("演算方法");
+    gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
 
-		/*** Out画像用 ***/
-		dialog.outImgFrame = gtk_frame_new("Out");
-		gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.outImgFrame, FALSE, FALSE, 0);
-		dialog.outImgBox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-		gtk_container_add(GTK_CONTAINER(dialog.outImgFrame), dialog.outImgBox);
-
-
-		// Out画像用 Opening Closing 切り替えCombobox
-		store = gtk_list_store_new( 1, G_TYPE_STRING );
-		gtk_list_store_append( store, &iter );
-		gtk_list_store_set( store, &iter, 0, "Closing", -1 );
-		gtk_list_store_append( store, &iter );
-		gtk_list_store_set( store, &iter, 0, "Opening", -1 );
-		/* Create combo box with store as data source. */
-		dialog.outSwitchingMorphologyCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
-		gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.outSwitchingMorphologyCombobox),&iter);
-		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outSwitchingMorphologyCombobox , FALSE, FALSE, 0);
-		/* Create cell renderer. */
-		cell = gtk_cell_renderer_text_new();
-		/* Pack it into the combo box. */
-		gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, TRUE );
-		/* Connect renderer to data source. */
-		gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, "text", 0, NULL );
-		
-		// 試行回数を決定SpinButton
-		// 試行回数ラベル
-		dialog.numberOfOpenLabel = gtk_label_new("試行回数");
-		//gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
-		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.numberOfOpenLabel , FALSE, FALSE, 0);
-
-		//２値化の上限決定SpinButton
-		dialog.outNumberOfOpenSpin = gtk_spin_button_new_with_range(0,10,1);
-		// 値の桁数を指定
-		gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), 0);
-		//上限値と下限値を設ける
-		gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), TRUE);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin),1);
-		gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outNumberOfOpenSpin , FALSE, FALSE, 0);
+    // 演算方法を決定ComboBox
+    store = gtk_list_store_new( 1, G_TYPE_STRING );
+    gtk_list_store_append( store, &iter );
+    gtk_list_store_set( store, &iter, 0, "&", -1 );
+    gtk_list_store_prepend( store, &iter );
+    gtk_list_store_set( store, &iter, 0, "|", -1 );
+    gtk_list_store_insert( store, &iter, 1 );
+    gtk_list_store_set( store, &iter, 0, "^", -1 );
+    /* Create combo box with store as data source. */
+    dialog.choiceOperatorCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
+    gtk_box_pack_start(GTK_BOX(dialog.vbox),dialog.choiceOperatorCombobox , FALSE, FALSE, 0);
+    /* Create cell renderer. */
+    cell = gtk_cell_renderer_text_new();
+    gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.choiceOperatorCombobox),&iter);
+    /* Pack it into the combo box. */
+    gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, TRUE );
+    /* Connect renderer to data source. */
+    gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.choiceOperatorCombobox ), cell, "text", 0, NULL );
 
 
+    /*** Out画像用 ***/
+    dialog.outImgFrame = gtk_frame_new("Out");
+    gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.outImgFrame, FALSE, FALSE, 0);
+    dialog.outImgBox = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
+    gtk_container_add(GTK_CONTAINER(dialog.outImgFrame), dialog.outImgBox);
+
+
+    // Out画像用 Opening Closing 切り替えCombobox
+    store = gtk_list_store_new( 1, G_TYPE_STRING );
+    gtk_list_store_append( store, &iter );
+    gtk_list_store_set( store, &iter, 0, "Closing", -1 );
+    gtk_list_store_append( store, &iter );
+    gtk_list_store_set( store, &iter, 0, "Opening", -1 );
+    /* Create combo box with store as data source. */
+    dialog.outSwitchingMorphologyCombobox= gtk_combo_box_new_with_model( GTK_TREE_MODEL( store ) );
+    gtk_combo_box_set_active_iter(GTK_COMBO_BOX(dialog.outSwitchingMorphologyCombobox),&iter);
+    gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outSwitchingMorphologyCombobox , FALSE, FALSE, 0);
+    /* Create cell renderer. */
+    cell = gtk_cell_renderer_text_new();
+    /* Pack it into the combo box. */
+    gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, TRUE );
+    /* Connect renderer to data source. */
+    gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( dialog.outSwitchingMorphologyCombobox ), cell, "text", 0, NULL );
+
+    // 試行回数を決定SpinButton
+    // 試行回数ラベル
+    dialog.numberOfOpenLabel = gtk_label_new("試行回数");
+    //gtk_box_pack_start(GTK_BOX(dialog.vbox), dialog.numberOfOpenLabel, FALSE, FALSE, 0);
+    gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.numberOfOpenLabel , FALSE, FALSE, 0);
+
+    //２値化の上限決定SpinButton
+    dialog.outNumberOfOpenSpin = gtk_spin_button_new_with_range(0,10,1);
+    // 値の桁数を指定
+    gtk_spin_button_set_digits(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), 0);
+    //上限値と下限値を設ける
+    gtk_spin_button_set_wrap(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin), TRUE);
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(dialog.outNumberOfOpenSpin),1);
+    gtk_box_pack_start(GTK_BOX(dialog.outImgBox),dialog.outNumberOfOpenSpin , FALSE, FALSE, 0);
 
 
 		// コールバック関数を定義
@@ -448,10 +452,8 @@ int main(int argc, char ** argv)
 		g_signal_connect(G_OBJECT( dialog.lowSwitchingMorphologyCombobox ),  "changed",G_CALLBACK( cb_lowSwitchingMorphology_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.highSwitchingMorphologyCombobox ), "changed",G_CALLBACK( cb_highSwitchingMorphology_changed ), NULL );
 		g_signal_connect(G_OBJECT( dialog.outSwitchingMorphologyCombobox ), "changed",G_CALLBACK( cb_outSwitchingMorphology_changed ), NULL );
-	}
 
 	gtk_widget_show_all(dialog.window);
 	gtk_main();
 	return 0;
 }
-
